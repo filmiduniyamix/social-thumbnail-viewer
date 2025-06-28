@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Social Media Thumbnail Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f8f8f8;
+    }
+    h2 {
+      color: #333;
+    }
+    input, button {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      max-width: 500px;
+    }
+    .download-btn {
+      margin-top: 10px;
+      padding: 10px 15px;
+      background: #ff4d4d;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-block;
+      text-decoration: none;
+    }
+    #previewBox {
+      margin-top: 30px;
+      text-align: center;
+    }
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>🔗 Paste Any Social Media Link Below</h2>
+  <input type="text" id="linkInput" placeholder="Paste social media link here"/>
+  <button onclick="generatePreview()">Generate Thumbnail</button>
+
+  <div id="previewBox"></div>
+
+  <script>
+    function generatePreview() {
+      const url = document.getElementById("linkInput").value;
+      const previewBox = document.getElementById("previewBox");
+      previewBox.innerHTML = "";
+
+      if (!url) {
+        previewBox.innerHTML = "<p style='color:red;'>❌ Please paste a link!</p>";
+        return;
+      }
+
+      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        let videoId = url.split("v=")[1] || url.split(".be/")[1];
+        if (videoId.includes("&")) videoId = videoId.split("&")[0];
+        const thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        previewBox.innerHTML = `
+          <img src="${thumbUrl}" />
+          <br>
+          <a href="${thumbUrl}" download class="download-btn">⬇ Download Thumbnail</a>
+        `;
+      }
+
+      else if (url.includes("x.com") || url.includes("twitter.com")) {
+        previewBox.innerHTML = `
+          <blockquote class="twitter-tweet"><a href="${url}"></a></blockquote>
+          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        `;
+      }
+
+      else if (url.includes("instagram.com")) {
+        previewBox.innerHTML = `
+          <blockquote class="instagram-media" data-instgrm-permalink="${url}" data-instgrm-version="14"></blockquote>
+          <script async src="//www.instagram.com/embed.js"></script>
+        `;
+      }
+
+      else if (url.includes("facebook.com")) {
+        previewBox.innerHTML = `
+          <iframe src="https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(url)}&width=500" width="500" height="300" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+        `;
+      }
+
+      else {
+        previewBox.innerHTML = "<p>🚫 This link is not supported for thumbnail preview.</p>";
+      }
+    }
+  </script>
+
+</body>
+  </html>
