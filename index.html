@@ -1,100 +1,944 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Social Media Thumbnail Generator</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background: #f8f8f8;
-    }
-    h2 {
-      color: #333;
-    }
-    input, button {
-      padding: 10px;
-      margin-top: 10px;
-      width: 100%;
-      max-width: 500px;
-    }
-    .download-btn {
-      margin-top: 10px;
-      padding: 10px 15px;
-      background: #ff4d4d;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      display: inline-block;
-      text-decoration: none;
-    }
-    #previewBox {
-      margin-top: 30px;
-      text-align: center;
-    }
-    img {
-      max-width: 100%;
-      height: auto;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Video Player & Downloader</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            margin-top: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #ff9966, #ff5e62);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #ccc;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .input-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        label {
+            font-size: 1.1rem;
+            color: #ff9966;
+            font-weight: 500;
+        }
+        
+        .url-input {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #ff5e62;
+            box-shadow: 0 0 0 3px rgba(255, 94, 98, 0.3);
+        }
+        
+        button {
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff9966, #ff5e62);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 105, 105, 0.3);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 105, 105, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .platform-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .platform-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .platform-icon:hover {
+            transform: translateY(-5px);
+        }
+        
+        .youtube { color: #FF0000; }
+        .facebook { color: #1877F2; }
+        .instagram { color: #E1306C; }
+        .twitter { color: #1DA1F2; }
+        .tiktok { color: #000000; background: linear-gradient(to right, #25F4EE, #000000, #FE2C55); }
+        
+        .preview-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .preview-placeholder {
+            font-size: 1.2rem;
+            color: #aaa;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+        
+        .preview-content {
+            width: 100%;
+            display: none;
+        }
+        
+        .video-preview-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+        }
+        
+        .video-thumbnail-container {
+            position: relative;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            cursor: pointer;
+        }
+        
+        .video-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            display: block;
+            background: #000;
+            transition: all 0.3s ease;
+        }
+        
+        .video-thumbnail-container:hover .video-thumbnail {
+            transform: scale(1.03);
+            opacity: 0.9;
+        }
+        
+        .play-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 5rem;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            opacity: 0.9;
+        }
+        
+        .video-thumbnail-container:hover .play-icon {
+            transform: translate(-50%, -50%) scale(1.1);
+            color: #ff5e62;
+        }
+        
+        .video-info {
+            text-align: left;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        
+        .video-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #ff9966;
+            line-height: 1.4;
+        }
+        
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #aaa;
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        .video-player {
+            width: 100%;
+            max-width: 640px;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 0 auto;
+            display: none;
+        }
+        
+        .video-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .download-btn {
+            background: linear-gradient(45deg, #25D366, #128C7E);
+        }
+        
+        .watch-btn {
+            background: linear-gradient(45deg, #3498db, #2c3e50);
+        }
+        
+        .back-btn {
+            background: linear-gradient(45deg, #9b59b6, #8e44ad);
+        }
+        
+        .unsupported-message {
+            color: #ff5e62;
+            font-size: 1.2rem;
+            padding: 30px;
+        }
+        
+        .supported-platforms {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .supported-platforms h3 {
+            color: #ff9966;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .platform-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .platform-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 20px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .input-section {
+                padding: 20px;
+            }
+            
+            .url-input {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .preview-section {
+                padding: 20px;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+        }
+        
+        /* Animation for video loading */
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        .loading {
+            animation: pulse 1.5s infinite;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #ff9966;
+        }
+        
+        .loading i {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
-
-  <h2>🔗 Paste Any Social Media Link Below</h2>
-  <input type="text" id="linkInput" placeholder="Paste social media link here"/>
-  <button onclick="generatePreview()">Generate Thumbnail</button>
-
-  <div id="previewBox"></div>
-
-  <script>
-    function generatePreview() {
-      const url = document.getElementById("linkInput").value;
-      const previewBox = document.getElementById("previewBox");
-      previewBox.innerHTML = "";
-
-      if (!url) {
-        previewBox.innerHTML = "<p style='color:red;'>❌ Please paste a link!</p>";
-        return;
-      }
-
-      if (url.includes("youtube.com") || url.includes("youtu.be")) {
-        let videoId = url.split("v=")[1] || url.split(".be/")[1];
-        if (videoId.includes("&")) videoId = videoId.split("&")[0];
-        const thumbUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-        previewBox.innerHTML = `
-          <img src="${thumbUrl}" />
-          <br>
-          <a href="${thumbUrl}" download class="download-btn">⬇ Download Thumbnail</a>
-        `;
-      }
-
-      else if (url.includes("x.com") || url.includes("twitter.com")) {
-        previewBox.innerHTML = `
-          <blockquote class="twitter-tweet"><a href="${url}"></a></blockquote>
-          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-        `;
-      }
-
-      else if (url.includes("instagram.com")) {
-        previewBox.innerHTML = `
-          <blockquote class="instagram-media" data-instgrm-permalink="${url}" data-instgrm-version="14"></blockquote>
-          <script async src="//www.instagram.com/embed.js"></script>
-        `;
-      }
-
-      else if (url.includes("facebook.com")) {
-        previewBox.innerHTML = `
-          <iframe src="https://www.facebook.com/plugins/post.php?href=${encodeURIComponent(url)}&width=500" width="500" height="300" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
-        `;
-      }
-
-      else {
-        previewBox.innerHTML = "<p>🚫 This link is not supported for thumbnail preview.</p>";
-      }
-    }
-  </script>
-
+    <div class="container">
+        <header>
+            <h1>Social Media Video Player & Downloader</h1>
+            <p class="subtitle">Paste any social media video link to preview, play, and download the video directly</p>
+        </header>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="url-input"><i class="fas fa-link"></i> Enter Video URL</label>
+                <div class="url-input">
+                    <input type="url" id="url-input" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+                    <button id="preview-btn"><i class="fas fa-eye"></i> Preview Video</button>
+                </div>
+            </div>
+            
+            <div class="platform-icons">
+                <div class="platform-icon youtube" data-platform="youtube"><i class="fab fa-youtube"></i></div>
+                <div class="platform-icon facebook" data-platform="facebook"><i class="fab fa-facebook"></i></div>
+                <div class="platform-icon instagram" data-platform="instagram"><i class="fab fa-instagram"></i></div>
+                <div class="platform-icon twitter" data-platform="twitter"><i class="fab fa-twitter"></i></div>
+                <div class="platform-icon tiktok" data-platform="tiktok"><i class="fab fa-tiktok"></i></div>
+            </div>
+        </div>
+        
+        <div class="preview-section">
+            <div class="preview-placeholder" id="preview-placeholder">
+                <i class="fas fa-play-circle" style="font-size: 3rem; margin-bottom: 20px; color: #ff9966;"></i>
+                <p>Enter a video URL from YouTube, Facebook, Instagram, Twitter or TikTok</p>
+                <p>Preview will appear here with thumbnail, title, and download options</p>
+            </div>
+            
+            <div class="preview-content" id="preview-content">
+                <!-- Content will be dynamically inserted here -->
+            </div>
+        </div>
+        
+        <div class="supported-platforms">
+            <h3><i class="fas fa-check-circle"></i> Supported Platforms</h3>
+            <div class="platform-list">
+                <div class="platform-badge"><i class="fab fa-youtube youtube"></i> YouTube</div>
+                <div class="platform-badge"><i class="fab fa-facebook facebook"></i> Facebook</div>
+                <div class="platform-badge"><i class="fab fa-instagram instagram"></i> Instagram</div>
+                <div class="platform-badge"><i class="fab fa-twitter twitter"></i> Twitter</div>
+                <div class="platform-badge"><i class="fab fa-tiktok tiktok"></i> TikTok</div>
+                <div class="platform-badge"><i class="fab fa-vimeo"></i> Vimeo</div>
+                <div class="platform-badge"><i class="fab fa-dailymotion"></i> Dailymotion</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // DOM Elements
+        const urlInput = document.getElementById('url-input');
+        const previewBtn = document.getElementById('preview-btn');
+        const previewPlaceholder = document.getElementById('preview-placeholder');
+        const previewContent = document.getElementById('preview-content');
+        
+        // Supported platforms and their handlers
+        const platformHandlers = {
+            'youtube': handleYouTube,
+            'facebook': handleFacebook,
+            'instagram': handleInstagram,
+            'twitter': handleTwitter,
+            'tiktok': handleTikTok,
+            'vimeo': handleVimeo,
+            'dailymotion': handleDailymotion
+        };
+        
+        // Event listeners
+        previewBtn.addEventListener('click', handlePreview);
+        
+        // Handle platform icons click
+        document.querySelectorAll('.platform-icon').forEach(icon => {
+            icon.addEventListener('click', () => {
+                const platform = icon.getAttribute('data-platform');
+                setExampleUrl(platform);
+            });
+        });
+        
+        // Set example URL based on platform
+        function setExampleUrl(platform) {
+            const examples = {
+                'youtube': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                'facebook': 'https://www.facebook.com/facebook/videos/10153231379946729/',
+                'instagram': 'https://www.instagram.com/reel/Cg1eP6SLOVo/',
+                'twitter': 'https://twitter.com/Twitter/status/1384871406049902593',
+                'tiktok': 'https://www.tiktok.com/@tiktok/video/7106594312292453675'
+            };
+            
+            urlInput.value = examples[platform] || examples['youtube'];
+            urlInput.focus();
+        }
+        
+        // Handle preview button click
+        function handlePreview() {
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                showError("Please enter a video URL");
+                return;
+            }
+            
+            // Reset preview
+            previewPlaceholder.style.display = "none";
+            previewContent.style.display = "block";
+            previewContent.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading video preview...</div>';
+            
+            // Process after a short delay to show loading state
+            setTimeout(() => {
+                processUrl(url);
+            }, 800);
+        }
+        
+        // Process the URL and show preview
+        function processUrl(url) {
+            let platform = null;
+            
+            // Detect platform based on URL
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                platform = 'youtube';
+            } else if (url.includes('facebook.com') || url.includes('fb.watch')) {
+                platform = 'facebook';
+            } else if (url.includes('instagram.com')) {
+                platform = 'instagram';
+            } else if (url.includes('twitter.com') || url.includes('x.com')) {
+                platform = 'twitter';
+            } else if (url.includes('tiktok.com')) {
+                platform = 'tiktok';
+            } else if (url.includes('vimeo.com')) {
+                platform = 'vimeo';
+            } else if (url.includes('dailymotion.com')) {
+                platform = 'dailymotion';
+            }
+            
+            if (platform && platformHandlers[platform]) {
+                const previewHtml = platformHandlers[platform](url);
+                previewContent.innerHTML = previewHtml;
+                
+                // Add event listeners after HTML is inserted
+                setTimeout(() => {
+                    addPreviewEventListeners(platform, url);
+                }, 100);
+            } else {
+                showUnsupported();
+            }
+        }
+        
+        // Add event listeners for preview elements
+        function addPreviewEventListeners(platform, url) {
+            // Play button
+            const playBtn = document.querySelector('.video-thumbnail-container');
+            if (playBtn) {
+                playBtn.addEventListener('click', () => {
+                    document.querySelector('.video-thumbnail-container').style.display = 'none';
+                    document.querySelector('.video-player').style.display = 'block';
+                });
+            }
+            
+            // Watch on platform button
+            const watchBtn = document.querySelector('.watch-btn');
+            if (watchBtn) {
+                watchBtn.addEventListener('click', () => {
+                    window.open(url, '_blank');
+                });
+            }
+            
+            // Back button
+            const backBtn = document.querySelector('.back-btn');
+            if (backBtn) {
+                backBtn.addEventListener('click', () => {
+                    document.querySelector('.video-player').style.display = 'none';
+                    document.querySelector('.video-thumbnail-container').style.display = 'block';
+                });
+            }
+        }
+        
+        // YouTube handler
+        function handleYouTube(url) {
+            const videoId = extractYouTubeId(url);
+            if (!videoId) return showUnsupported();
+            
+            const title = "Amazing YouTube Video (Example Title)";
+            const views = "1.2M views";
+            const date = "Jun 15, 2023";
+            
+            return `
+                <div class="video-preview-container">
+                    <div class="video-thumbnail-container">
+                        <img src="https://img.youtube.com/vi/${videoId}/maxresdefault.jpg" 
+                             alt="YouTube Thumbnail" 
+                             class="video-thumbnail">
+                        <div class="play-icon">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="video-player" id="video-player">
+                        <iframe class="video-iframe" 
+                                src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                        <button class="back-btn"><i class="fas fa-arrow-left"></i> Back to Preview</button>
+                    </div>
+                    
+                    <div class="video-info">
+                        <h2 class="video-title">${title}</h2>
+                        <div class="video-meta">
+                            <span><i class="fab fa-youtube youtube"></i> YouTube</span>
+                            <span>${views}</span>
+                            <span>${date}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="download-btn" onclick="downloadVideo('${url}', '${title}')">
+                            <i class="fas fa-download"></i> Download Video
+                        </button>
+                        <button class="watch-btn">
+                            <i class="fas fa-external-link-alt"></i> Watch on YouTube
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Extract YouTube video ID
+        function extractYouTubeId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+        
+        // Facebook handler
+        function handleFacebook(url) {
+            const videoId = extractFacebookId(url);
+            if (!videoId) return showUnsupported();
+            
+            const title = "Exciting Facebook Video (Example Title)";
+            const views = "845K views";
+            const date = "May 28, 2023";
+            
+            return `
+                <div class="video-preview-container">
+                    <div class="video-thumbnail-container">
+                        <img src="https://placehold.co/640x360/1877F2/FFFFFF?text=Facebook+Thumbnail" 
+                             alt="Facebook Thumbnail" 
+                             class="video-thumbnail">
+                        <div class="play-icon">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="video-player" id="video-player">
+                        <iframe class="video-iframe" 
+                                src="https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}" 
+                                frameborder="0" 
+                                allow="autoplay; encrypted-media" 
+                                allowfullscreen>
+                        </iframe>
+                        <button class="back-btn"><i class="fas fa-arrow-left"></i> Back to Preview</button>
+                    </div>
+                    
+                    <div class="video-info">
+                        <h2 class="video-title">${title}</h2>
+                        <div class="video-meta">
+                            <span><i class="fab fa-facebook facebook"></i> Facebook</span>
+                            <span>${views}</span>
+                            <span>${date}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="download-btn" onclick="downloadVideo('${url}', '${title}')">
+                            <i class="fas fa-download"></i> Download Video
+                        </button>
+                        <button class="watch-btn">
+                            <i class="fas fa-external-link-alt"></i> Watch on Facebook
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Extract Facebook video ID (simplified)
+        function extractFacebookId(url) {
+            const regExp = /(\d+)$/;
+            const match = url.match(regExp);
+            return match ? match[1] : null;
+        }
+        
+        // Instagram handler
+        function handleInstagram(url) {
+            const postId = extractInstagramId(url);
+            if (!postId) return showUnsupported();
+            
+            const title = "Beautiful Instagram Reel (Example Title)";
+            const views = "2.4M views";
+            const date = "Jun 5, 2023";
+            
+            return `
+                <div class="video-preview-container">
+                    <div class="video-thumbnail-container">
+                        <img src="https://placehold.co/640x640/E1306C/FFFFFF?text=Instagram+Thumbnail" 
+                             alt="Instagram Thumbnail" 
+                             class="video-thumbnail">
+                        <div class="play-icon">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="video-player" id="video-player">
+                        <iframe class="video-iframe" 
+                                src="https://www.instagram.com/p/${postId}/embed" 
+                                frameborder="0" 
+                                allow="autoplay; encrypted-media" 
+                                allowfullscreen>
+                        </iframe>
+                        <button class="back-btn"><i class="fas fa-arrow-left"></i> Back to Preview</button>
+                    </div>
+                    
+                    <div class="video-info">
+                        <h2 class="video-title">${title}</h2>
+                        <div class="video-meta">
+                            <span><i class="fab fa-instagram instagram"></i> Instagram</span>
+                            <span>${views}</span>
+                            <span>${date}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="download-btn" onclick="downloadVideo('${url}', '${title}')">
+                            <i class="fas fa-download"></i> Download Video
+                        </button>
+                        <button class="watch-btn">
+                            <i class="fas fa-external-link-alt"></i> Watch on Instagram
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Extract Instagram post ID
+        function extractInstagramId(url) {
+            const regExp = /instagram\.com\/reel\/([a-zA-Z0-9_-]+)/;
+            const match = url.match(regExp);
+            return match ? match[1] : null;
+        }
+        
+        // TikTok handler
+        function handleTikTok(url) {
+            const videoId = extractTikTokId(url);
+            if (!videoId) return showUnsupported();
+            
+            const title = "Trending TikTok Video (Example Title)";
+            const views = "5.7M views";
+            const date = "Jun 10, 2023";
+            
+            return `
+                <div class="video-preview-container">
+                    <div class="video-thumbnail-container">
+                        <img src="https://placehold.co/640x1138/000000/FFFFFF?text=TikTok+Thumbnail" 
+                             alt="TikTok Thumbnail" 
+                             class="video-thumbnail">
+                        <div class="play-icon">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="video-player" id="video-player">
+                        <iframe class="video-iframe" 
+                                src="https://www.tiktok.com/embed/v2/${videoId}" 
+                                frameborder="0" 
+                                allow="autoplay; encrypted-media" 
+                                allowfullscreen>
+                        </iframe>
+                        <button class="back-btn"><i class="fas fa-arrow-left"></i> Back to Preview</button>
+                    </div>
+                    
+                    <div class="video-info">
+                        <h2 class="video-title">${title}</h2>
+                        <div class="video-meta">
+                            <span><i class="fab fa-tiktok"></i> TikTok</span>
+                            <span>${views}</span>
+                            <span>${date}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="download-btn" onclick="downloadVideo('${url}', '${title}')">
+                            <i class="fas fa-download"></i> Download Video
+                        </button>
+                        <button class="watch-btn">
+                            <i class="fas fa-external-link-alt"></i> Watch on TikTok
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Extract TikTok video ID
+        function extractTikTokId(url) {
+            const regExp = /tiktok\.com\/@.+\/video\/(\d+)/;
+            const match = url.match(regExp);
+            return match ? match[1] : null;
+        }
+        
+        // Vimeo handler (placeholder)
+        function handleVimeo(url) {
+            return handleGeneric(url, 'Vimeo');
+        }
+        
+        // Dailymotion handler (placeholder)
+        function handleDailymotion(url) {
+            return handleGeneric(url, 'Dailymotion');
+        }
+        
+        // Twitter handler (placeholder)
+        function handleTwitter(url) {
+            return handleGeneric(url, 'Twitter');
+        }
+        
+        // Generic handler for other platforms
+        function handleGeneric(url, platform) {
+            const title = `Popular ${platform} Video (Example Title)`;
+            const views = "3.1M views";
+            const date = "Jun 20, 2023";
+            const iconClass = platform.toLowerCase();
+            
+            return `
+                <div class="video-preview-container">
+                    <div class="video-thumbnail-container">
+                        <img src="https://placehold.co/640x360/3498db/FFFFFF?text=${platform}+Thumbnail" 
+                             alt="${platform} Thumbnail" 
+                             class="video-thumbnail">
+                        <div class="play-icon">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="video-info">
+                        <h2 class="video-title">${title}</h2>
+                        <div class="video-meta">
+                            <span><i class="fab fa-${iconClass}"></i> ${platform}</span>
+                            <span>${views}</span>
+                            <span>${date}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="download-btn" onclick="downloadVideo('${url}', '${title}')">
+                            <i class="fas fa-download"></i> Download Video
+                        </button>
+                        <button class="watch-btn" onclick="window.open('${url}', '_blank')">
+                            <i class="fas fa-external-link-alt"></i> Watch on ${platform}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Show unsupported message
+        function showUnsupported() {
+            previewContent.innerHTML = `
+                <div class="unsupported-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Unsupported Platform</h3>
+                    <p>This video platform is not currently supported.</p>
+                    <p>Supported platforms: YouTube, Facebook, Instagram, TikTok, Twitter, Vimeo, Dailymotion</p>
+                </div>
+            `;
+        }
+        
+        // Show error message
+        function showError(message) {
+            previewPlaceholder.style.display = "flex";
+            previewContent.style.display = "none";
+            
+            // Create and show error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            errorDiv.style.color = "#ff5e62";
+            errorDiv.style.marginTop = "15px";
+            
+            previewPlaceholder.appendChild(errorDiv);
+            
+            // Remove error after 3 seconds
+            setTimeout(() => {
+                if (previewPlaceholder.contains(errorDiv)) {
+                    previewPlaceholder.removeChild(errorDiv);
+                }
+            }, 3000);
+        }
+        
+        // Download video function
+        function downloadVideo(url, title) {
+            // In a real implementation, this would use a server to fetch the video
+            // Here we simulate the download process
+            showError("Download functionality requires a server backend. For demo purposes, we're simulating the download.");
+            
+            // Simulate download progress
+            const downloadBtn = document.querySelector('.download-btn');
+            const originalHtml = downloadBtn.innerHTML;
+            
+            downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparing download...';
+            downloadBtn.disabled = true;
+            
+            setTimeout(() => {
+                downloadBtn.innerHTML = '<i class="fas fa-check"></i> Download Ready!';
+                setTimeout(() => {
+                    downloadBtn.innerHTML = originalHtml;
+                    downloadBtn.disabled = false;
+                }, 2000);
+            }, 2000);
+        }
+        
+        // Extensibility note in code
+        /*
+        To add support for a new platform, follow the same pattern:
+        1. Add a new handler function (e.g., handleReddit, handleLinkedIn)
+        2. Implement the following in the handler:
+           - Extract video ID from URL
+           - Return HTML with:
+               * Thumbnail preview
+               * Video player iframe
+               * Video title and metadata
+               * Download button
+        3. Add the platform to platformHandlers object
+        4. Add detection logic in processUrl function
+        
+        Example for Reddit:
+        function handleReddit(url) {
+            const postId = extractRedditId(url);
+            // ... rest of the implementation
+        }
+        
+        For LinkedIn:
+        function handleLinkedIn(url) {
+            // Use LinkedIn's oEmbed if available
+        }
+        
+        For Threads:
+        function handleThreads(url) {
+            // Use <blockquote data-threads-permalink='...'> if available
+        }
+        */
+    </script>
 </body>
-  </html>
+</html>
