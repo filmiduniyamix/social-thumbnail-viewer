@@ -412,7 +412,6 @@
                 <div class="platform-icon instagram" data-platform="instagram"><i class="fab fa-instagram"></i></div>
                 <div class="platform-icon twitter" data-platform="twitter"><i class="fab fa-twitter"></i></div>
                 <div class="platform-icon tiktok" data-platform="tiktok"><i class="fab fa-tiktok"></i></div>
-                <div class="platform-icon pronhub" data-platform="tiktok"><i class="fab fa-pronhub"></i></div>
             </div>
         </div>
         
@@ -438,7 +437,6 @@
                 <div class="platform-badge"><i class="fab fa-tiktok tiktok"></i> TikTok</div>
                 <div class="platform-badge"><i class="fab fa-vimeo"></i> Vimeo</div>
                 <div class="platform-badge"><i class="fab fa-dailymotion"></i> Dailymotion</div>
-                <div class="platform-badge"><i class="fab fa-pronhub"></i> Pronhub</div>
             </div>
         </div>
     </div>
@@ -459,7 +457,6 @@
             'tiktok': handleTikTok,
             'vimeo': handleVimeo,
             'dailymotion': handleDailymotion
-            'pronhub' : pronhub
         };
         
         // Event listeners
@@ -480,8 +477,7 @@
                 'facebook': 'https://www.facebook.com/facebook/videos/10153231379946729/',
                 'instagram': 'https://www.instagram.com/reel/Cg1eP6SLOVo/',
                 'twitter': 'https://twitter.com/Twitter/status/1384871406049902593',
-                'tiktok': 'https://www.tiktok.com/@tiktok/video/7106594312292453675',
-                'pronhub': 'https://www.pornhub.com/view_video/6666ca6326d1a'
+                'tiktok': 'https://www.tiktok.com/@tiktok/video/7106594312292453675'
             };
             
             urlInput.value = examples[platform] || examples['youtube'];
@@ -527,8 +523,6 @@
                 platform = 'vimeo';
             } else if (url.includes('dailymotion.com')) {
                 platform = 'dailymotion';
-                } else if (url.includes('pronhub.com')) {
-                platform = 'pronhub';
             }
             
             if (platform && platformHandlers[platform]) {
